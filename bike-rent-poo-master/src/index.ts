@@ -24,13 +24,16 @@ dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 2)
 const twoDaysFromToday = new Date()
 twoDaysFromToday.setDate(twoDaysFromToday.getDate() + 3)
 
-app.rentBike(bikeId, 'jose@mail.com', yesterday, today) //alugar bike
+
+const rental = app.rentBike(bike, user, today, twoDaysFromToday); //alugar bike
 
 console.log('Antes do retorno', app.rents)
 
-app.returnBike(bikeId, 'jose@mail.com') // devolver bike
+const returnDate = new Date();
+const rentalCost = app.returnBike(rental, returnDate);
 
-console.log('Depois do retorno', app.rents) 
+console.log(`Rental Cost: $${rentalCost.toFixed(2)}`);// devolver bike
+
 
 app.removeUser('jose@mail.com') //remover usuario
 

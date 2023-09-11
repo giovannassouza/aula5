@@ -46,35 +46,31 @@ export class App {
         throw new Error('User does not exist.')
     }
     
-    rentBike(bikeId: string, userEmail: string, startDate: Date, endDate: Date): void {
-        const bike = this.bikes.find(bike => bike.id === bikeId)
-        if (!bike) {
-            throw new Error('Bike not found.')
-        }
-        const user = this.findUser(userEmail)
-        if (!user) {
-            throw new Error('User not found.')
-        }
-        const bikeRents = this.rents.filter(rent =>
-            rent.bike.id === bikeId && !rent.dateReturned
-        )
-        const newRent = Rent.create(bikeRents, bike, user, startDate, endDate)
-        this.rents.push(newRent)
+    rentBike(bike: Bike, user: User, startDate: Date, endDate: Date): Rent {
+        const rent = new Rent(bike, user, startDate, endDate);
+        this.rents.push(rent);
+
+        console.log(`Bike Rented:\nModel: ${bike.name}\nUser ID: ${user.id}\nStart Date: ${startDate}\nEnd Date: ${endDate}\n`);
+
+        return rent;
     }
 
-    returnBike(bikeId: string, userEmail: string) {
-        const today = new Date()
-        const rent = this.rents.find(rent => 
-            rent.bike.id === bikeId &&
-            rent.user.email === userEmail &&
-            rent.dateReturned === undefined &&
-            rent.dateFrom <= today
-        )
-        if (rent) {
-            rent.dateReturned = today
-            return
+    returnBike(rental: Rent, returnDate: Date): number {
+        const rent = this.rents.find(r => r === rental);
+        if (!rent) {
+            throw new Error('Rental not found.');
         }
-        throw new Error('Rent not found.')
+
+        if (returnDate > rent.dateTo) {
+            throw new Error('Invalid return date.');
+        }
+
+        const rentalDays = (returnDate.getTime() - rent.dateFrom.getTime()) / (1000 * 60 * 60 * 24);
+        const rentalCost = rentalDays * rent.bike.rate;
+
+        console.log(`Bike Returned:\nModel: ${rent.bike.name}\nUser ID: ${rent.user.id}\nReturn Date: ${returnDate}\n`);
+
+        return rentalCost;
     }
 
     listUsers(): User[] {

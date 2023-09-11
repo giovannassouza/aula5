@@ -8,6 +8,8 @@ export class Bike {
         public description: string,
         public ratings: number,
         public imageUrls: string[],
-        public id?: string
+        public id?: string,
+        public disponibilidade: boolean = true // Disponibilidade por padrão é true.
+
     ) {}
 }
